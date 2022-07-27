@@ -14,7 +14,6 @@ export type CountdownRandomizerState = {
 }
 
 export class CountdownRandomizer extends React.Component<CountdownRandomizerProps, CountdownRandomizerState> {
-  private logStateInterval: NodeJS.Timeout | null = null;
   private countdownInterval: NodeJS.Timeout | null = null;
   private readonly countdownMs: number = 5000;
   constructor(props: CountdownRandomizerProps) {
@@ -27,14 +26,7 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
     };
   }
 
-  componentWillUnmount() {
-    if (this.logStateInterval) {
-      clearInterval(this.logStateInterval)
-    }
-  }
-
   private randomizeValues = async () => {
-    this.createLogStateInterval();
     this.setState({
       shouldRandomize: this.state.values.length !== 0,
       counter: this.countdownMs / 1000  
@@ -47,7 +39,7 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
   private randomizeValuesWorker = async () => {
     setTimeout(async () => {
       while (this.state.shouldRandomize) {
-        await sleep(25);
+        await sleep(35);
         this.setState({
           randomizedValue: this.state.values.at(Math.floor(Math.random() * this.state.values.length)) || ''
         });
@@ -86,18 +78,6 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
         this.resetRandomziedValue();
       }
     })
-  }
-
-  private createLogStateInterval = () => {
-    if (!this.logStateInterval) {
-      if (!this.logStateInterval) {
-        this.logStateInterval = setInterval(this.logState, 500);
-      }
-    }
-  }
-
-  private logState = () => {
-    console.log(this.state)
   }
 
   private resetRandomziedValue = () => {
