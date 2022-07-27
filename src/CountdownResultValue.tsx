@@ -18,7 +18,7 @@ export class CountdownResult extends React.Component<CountdownResultProps> {
         return this.validateInput ?
         <div className='randomized-value'>Randomized value: {this.props.randomizedValue}</div>
         :
-        <div className='randomized-value-initial-message'>Please add values to the input field and click randomize values</div>
+        <div className='randomized-value-initial-message'>Please add at least two values to the input field and click randomize values</div>
     }
 
     private get validateInput() {

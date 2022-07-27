@@ -90,7 +90,7 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
     return (
       <div className='countdown-randomizer-container'>
         <input type='text' disabled={this.state.shouldRandomize} onChange={(e) => this.updateValues(e)} placeholder='Add values and separate them by ,' />
-        <div className='buttons-wrapper'><button disabled={this.state.shouldRandomize || this.state.values.length === 0} onClick={() => this.randomizeValues()}>Randomize values</button><button disabled={this.state.shouldRandomize} onClick={() => this.resetRandomziedValue()}>Reset Randomized Value</button></div>
+        <div className='buttons-wrapper'><button disabled={this.state.shouldRandomize || this.state.values.length < 2} onClick={() => this.randomizeValues()}>Randomize values</button><button disabled={this.state.shouldRandomize} onClick={() => this.resetRandomziedValue()}>Reset Randomized Value</button></div>
         <CountdownResult randomizedValue={this.state.randomizedValue} counter={this.state.counter} />
       </div>
     );
