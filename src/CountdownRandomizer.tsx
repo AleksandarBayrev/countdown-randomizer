@@ -7,6 +7,7 @@ export type CountdownRandomizerProps = {
 }
 
 export type CountdownRandomizerState = {
+  inputFieldValue: string
   values: string[]
   randomizedValue: string
   shouldRandomize: boolean
@@ -19,6 +20,7 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
   constructor(props: CountdownRandomizerProps) {
     super(props);
     this.state = {
+      inputFieldValue: '',
       values: [],
       randomizedValue: '',
       shouldRandomize: false,
@@ -71,6 +73,7 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
 
   private updateValues = async (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
+      inputFieldValue: event.target.value,
       values: event.target.value.split(',').filter(x => x.length !== 0)
     });
     setTimeout(() => {
@@ -86,11 +89,18 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
     });
   }
 
+  private resetInput = () => {
+    this.setState({
+      inputFieldValue: '',
+      values: []
+    });
+  }
+
   render() {
     return (
       <div className='countdown-randomizer-container'>
-        <input type='text' disabled={this.state.shouldRandomize} onChange={(e) => this.updateValues(e)} placeholder='Add values and separate them by ,' />
-        <div className='buttons-wrapper'><button disabled={this.state.shouldRandomize || this.state.values.length < 2} onClick={() => this.randomizeValues()}>Randomize values</button><button disabled={this.state.shouldRandomize} onClick={() => this.resetRandomziedValue()}>Reset Randomized Value</button></div>
+        <input type='text' disabled={this.state.shouldRandomize} onChange={(e) => this.updateValues(e)} value={this.state.inputFieldValue} placeholder='Add values and separate them by ,' />
+        <div className='buttons-wrapper'><button disabled={this.state.shouldRandomize || this.state.values.length < 2} onClick={() => this.randomizeValues()}>Randomize values</button><button disabled={this.state.shouldRandomize} onClick={() => this.resetRandomziedValue()}>Reset Randomized Value</button><button disabled={this.state.shouldRandomize} onClick={() => { this.resetInput(); this.resetRandomziedValue(); }}>Reset input</button></div>
         <CountdownResult randomizedValue={this.state.randomizedValue} counter={this.state.counter} />
       </div>
     );
