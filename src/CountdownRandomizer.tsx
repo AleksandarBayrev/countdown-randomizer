@@ -8,16 +8,20 @@ export type CountdownRandomizerState = {
   values: string[]
   randomizedValue: string
   shouldRandomize: boolean
+  counter: number
 }
 
 export class CountdownRandomizer extends React.Component<CountdownRandomizerProps, CountdownRandomizerState> {
   private logStateInterval: NodeJS.Timeout | null = null;
+  private countdownInterval: NodeJS.Timeout | null = null;
+  private readonly countdownMs: number = 5000;
   constructor(props: CountdownRandomizerProps) {
     super(props);
     this.state = {
       values: [],
       randomizedValue: '',
-      shouldRandomize: false
+      shouldRandomize: false,
+      counter: 0
     };
   }
 
@@ -30,9 +34,11 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
   private randomizeValues = async () => {
     this.createLogStateInterval();
     this.setState({
-      shouldRandomize: true
+      shouldRandomize: true,
+      counter: this.countdownMs / 1000
     });
     this.createTimerToStopRandomizing();
+    this.createIntervalForCountdown();
     this.randomizeValuesWorker();
   }
 
@@ -44,7 +50,21 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
           randomizedValue: this.state.values.at(Math.floor(Math.random() * this.state.values.length)) || ''
         });
       }
+      if (this.countdownInterval) {
+        clearInterval(this.countdownInterval);
+        this.countdownInterval = null;
+      }
     });
+  }
+
+  private createIntervalForCountdown() {
+    if (!this.countdownInterval) {
+      this.countdownInterval = setInterval(() => {
+        this.setState({
+          counter: this.state.counter - 1
+        });
+      }, 1000);
+    }
   }
 
   private createTimerToStopRandomizing = () => {
@@ -82,13 +102,22 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
     });
   }
 
+  private getResultDivs() {
+    const randomizedValue = this.state.randomizedValue.length ?
+    <>Randomized value: {this.state.randomizedValue}</> : <>Please add values to the input field and click randomize values</>;
+    return (
+      <div className='randomized-value-container'>
+        {this.state.counter > 0 ? <div className='randomized-value-counter'>Revealing answer in {this.state.counter}</div> : <></>}
+        <div className='randomized-value'>{randomizedValue}</div>
+      </div>
+    )
+  }
   render() {
     return (
       <div className='countdown-randomizer-container'>
         <input type='text' disabled={this.state.shouldRandomize} onChange={(e) => this.updateValues(e)} placeholder='Add values and separate them by ,' />
         <div className='buttons-wrapper'><button disabled={this.state.shouldRandomize} onClick={() => this.randomizeValues()}>Randomize values</button><button disabled={this.state.shouldRandomize} onClick={() => this.resetRandomziedValue()}>Reset Randomized Value</button></div>
-        <div className='randomized-value'>{this.state.randomizedValue.length ?
-          <>Randomized value: {this.state.randomizedValue}</> : <>Please add values to the input field and click randomize values</>}</div>
+        {this.getResultDivs()}
       </div>
     );
   }
