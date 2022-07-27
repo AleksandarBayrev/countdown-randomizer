@@ -1,4 +1,5 @@
 import React from 'react';
+import { CountdownResult } from './CountdownResultValue';
 
 export type CountdownRandomizerProps = {
 
@@ -102,22 +103,12 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
     });
   }
 
-  private getResultDivs() {
-    const randomizedValue = this.state.randomizedValue.length ?
-    <>Randomized value: {this.state.randomizedValue}</> : <>Please add values to the input field and click randomize values</>;
-    return (
-      <div className='randomized-value-container'>
-        {this.state.counter > 0 ? <div className='randomized-value-counter'>Revealing answer in {this.state.counter}</div> : <></>}
-        <div className='randomized-value'>{randomizedValue}</div>
-      </div>
-    )
-  }
   render() {
     return (
       <div className='countdown-randomizer-container'>
         <input type='text' disabled={this.state.shouldRandomize} onChange={(e) => this.updateValues(e)} placeholder='Add values and separate them by ,' />
         <div className='buttons-wrapper'><button disabled={this.state.shouldRandomize} onClick={() => this.randomizeValues()}>Randomize values</button><button disabled={this.state.shouldRandomize} onClick={() => this.resetRandomziedValue()}>Reset Randomized Value</button></div>
-        {this.getResultDivs()}
+        <CountdownResult randomizedValue={this.state.randomizedValue} counter={this.state.counter} />
       </div>
     );
   }
