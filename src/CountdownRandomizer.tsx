@@ -1,5 +1,6 @@
 import React from 'react';
 import { CountdownResult } from './CountdownResultValue';
+import { sleep } from './sleep';
 
 export type CountdownRandomizerProps = {
 
@@ -46,7 +47,7 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
   private randomizeValuesWorker = async () => {
     setTimeout(async () => {
       while (this.state.shouldRandomize) {
-        await this.sleep(100);
+        await sleep(25);
         this.setState({
           randomizedValue: this.state.values.at(Math.floor(Math.random() * this.state.values.length)) || ''
         });
@@ -76,9 +77,6 @@ export class CountdownRandomizer extends React.Component<CountdownRandomizerProp
     }, 5000);
   }
 
-  private sleep = async (timeout: number) => {
-    await new Promise((resolve) => setTimeout(() => resolve({}), timeout))
-  }
   private updateValues = async (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       values: event.target.value.split(',').filter(x => x.length !== 0)
