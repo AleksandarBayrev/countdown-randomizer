@@ -11,14 +11,18 @@ export class CountdownResult extends React.Component<CountdownResultProps> {
     }
 
     private renderCounterText() {
-        return this.props.counter > 0 ? `Revealing answer in ${this.props.counter}` : ``;
+        return this.validateInput && this.props.counter > 0 ? `Revealing answer in ${this.props.counter}` : ``;
     }
 
     private renderRandomizedValueMessage() {
-        return this.props.randomizedValue.length ?
+        return this.validateInput ?
         <div className='randomized-value'>Randomized value: {this.props.randomizedValue}</div>
         :
         <div className='randomized-value-initial-message'>Please add values to the input field and click randomize values</div>
+    }
+
+    private get validateInput() {
+        return this.props.randomizedValue.length > 0;
     }
     render(): React.ReactNode {
         return (
